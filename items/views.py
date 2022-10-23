@@ -1,3 +1,4 @@
+from tkinter import N
 from django.shortcuts import redirect, render
 
 from items.forms import ItemForm
@@ -14,6 +15,7 @@ def get_items(req):
                 "name": item.name,
                 "price": item.price,
                 "image": item.image,
+                "Category": item.Category
             }
         )
     context = {"items": _items}
@@ -21,12 +23,17 @@ def get_items(req):
 
 def get_item(req, item_id):
     item = Item.objects.get(id=item_id)
+    comments = item.comments.all()
+    new_comments = []
+    for comment in comments:
+        new_comments.append({"message": comment.message})
     context = {
                "item": { 
                     "id": item.id,
                     "name": item.name,
                     "price": item.price,
-                    "image": item.image
+                    "image": item.image,
+                    "comments": new_comments
                 }
             }
     return render(req, "item_detail.html", context)
